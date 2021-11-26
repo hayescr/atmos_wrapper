@@ -1,4 +1,5 @@
 import os
+from abund_utils import atomic_sym_to_num
 
 
 class AtmosManager:
@@ -72,5 +73,21 @@ class AtmosManager:
 
     def moog_abund(self, abund_dict):
         # To be implemented
-        pass
+        elem_num_dict = dict(sorted({atomic_sym_to_num(
+            elem): val for elem, val in abund_dict.items()}.items()))
+        with open(self.file_loc, 'r') as file:
+            lines = file.readlines()
 
+        newfilename = 'new_atmos_file.tmp'
+        with open(newfilename, 'w') as newfile:
+            for line in lines:
+                if 'NATOMS' in line:
+                    nline = line.replace('NATOMS     0',
+                                         f'NATOMS    {len(elem_num_dict):2d}')
+                    print(nline, file=newfile, end='')
+                    for elem, val in elem_num_dict.items():
+                        print(f'   {elem}  {val}', file=newfile)
+                else:
+                    print(line, file=newfile, end='')
+
+        os.replace(newfilename, self.file_loc)
