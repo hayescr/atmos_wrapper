@@ -1,0 +1,322 @@
+\documentclass[11pt]{article}
+% C'est pour definir le type de document ,tu peux aussi mettre 'article'
+%\textwidth=17.0cm
+%\textheight=24.5cm
+%\oddsidemargin=-1.cm
+%\evensidemargin=-1.cm
+%\topmargin=-1.5cm
+%\headsep=0.0cm
+
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+%C'est pour mettre en francais...
+\usepackage[dvips]{graphicx}
+%\usepackage{fancyheadings}
+%pour faire joli
+%\pagestyle{headings}  
+\usepackage{array}
+\usepackage{geometry}
+\usepackage{endnotes}
+\usepackage[mathcal]{eucal}
+\usepackage{latexsym}
+\usepackage{amsfonts}
+\usepackage{inputenc}
+\usepackage{syntonly}
+\usepackage{fancybox}
+\usepackage{relsize}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{listings}
+%\parindent = 1cm
+
+\begin{document}
+\begin{titlepage}
+\center
+\title{Interpolation of MARCS stellar atmosphere models\\
+Manual}
+%\vspace{10cm}
+\author{Thomas Masseron}
+\maketitle
+\end{titlepage} 
+
+\section{Introduction}
+Because it is impossible to generate an infinite grids of atmosphere, I have decided to develop an interpolation program to quickly generate intermediate models from an initial grid. \\
+This program interpolates the thermal structure, the electronic pressure, the gas pressure, the opacity and the microturbulence velocity (+ optical depth in case  of spherical geometry models) as a function of effective temperature, gravity and metallicity (See fig \ref{interpol_space}).
+\lstinputlisting [caption={Representation of the interpolation of a model atmosphere(@) among a cubic grid of input models.}]{teffloggzspace.tex} \label{interpol_space}
+This work has been developed in July 2003 and some later improvements have been added since (for detail updates, see the routine \textit{interpol\_modeles.f}).  
+
+\section{Warnings and limitations}
+This code has been tested and calibrated with the MARCS model atmosphere grid calculated by B. Plez for the purpose of the First Star program.\\
+This code is currently valid within the following limits:
+\begin{itemize}
+\item $3800<T_{eff}<7000$
+\item $0.0<\log g<5$
+\item $0.0 <z< -4.0$
+\item standard solar scale composition for $\alpha$ elements is assumed to follow the average Galactic trend.
+\end{itemize} 
+However, be aware the program can run outside these conditions and no warning is displayed. 
+
+
+\section{Installation and execution}
+\subsection{Requirements}
+\begin{itemize}
+\item Fortran 90 or 95 compiler. The current version as been successfully tested with g95, gfortran and ifc/ifort (intel fortran compiler).
+\item SuperMongo
+\item ghostview or any ps image viewer
+\item \textit{interpol\_modeles.f} Fortran routine
+\item \textit{interpol.com} shell script routine 
+\end{itemize}
+
+\subsection{Installation}
+Compile \textit{interpol\_modeles.f} with Fortran 90 or 95 (rmk: a lots of features are not supported by Fortran77) (e.g. $>$f95 interpol\_modeles.f -o interpol\_modeles).\\
+Edit \textit{interpol.com} shell script (e.g. $>$vi interpol.com) and set the correct path of the Fortran executable.
+
+\subsection{Execution}
+Basically, the shell script \textit{interpol.com} is an all-in-one manner to set up the variables and the file directories, to call and run the fortran executable, to plot and display the graph. It is \emph{not} an input file!\\
+Edit \textit{interpol.com} shell script (e.g. $>$vi interpol.com) \\
+Set the 8 input models with their path (WARNING: respect strictly the order of the models as specified in the script). Entering several times identical models is the way to interpolate 2 or less stellar parameters. \\
+Set the required interpolation values.\\
+Execute the shell script (e.g. $>$./interpol.com).
+The correct output should be something like this:
+\\
+ *****************************\\
+ * begining of interpolation *\\
+ *****************************\\
+ Interpolation between :\\
+  this model is PLANE PARALLEL\\
+model 1  Teff=   5500.  logg= 4.00  z= -2.00\\
+  this model is PLANE PARALLEL\\
+model 2  Teff=   5500.  logg= 4.00  z=  0.00\\
+  this model is PLANE PARALLEL\\
+model 3  Teff=   5500.  logg= 4.50  z= -2.00\\
+  this model is PLANE PARALLEL\\
+model 4  Teff=   5500.  logg= 4.50  z=  0.00\\
+  this model is PLANE PARALLEL\\
+model 5  Teff=   6000.  logg= 4.00  z= -2.00\\
+  this model is PLANE PARALLEL\\
+model 6  Teff=   6000.  logg= 4.00  z=  0.00\\
+  this model is PLANE PARALLEL\\
+model 7  Teff=   6000.  logg= 4.50  z= -2.00\\
+  this model is PLANE PARALLEL\\
+model 8  Teff=   6000.  logg= 4.50  z=  0.00\\
+Interpolation point : Teff=   5777.  logg= 4.44  z=  0.00\\
+ resample models on common depth basis: tauRoss\\
+ optimized interpolation applied for standard composition models\\
+ now calculate rhox\\
+ now calculate error\\
+    estimated max error on T =  0.4 \%\\
+   estimated max error on Pe =  5.0 \%\\
+   estimated max error on Pg =  2.0 \%\\
+estimated max error on kappa =  6.0 \%\\
+ now write result\\
+ plan parallel models\\
+  this model is PLANE PARALLEL\\
+ interpolation done\\
+control plot loading...\\
+
+\subsection{Input and output files}
+The input model format is compatible with the Uppsala grid (http://marcs.astro.uu.se/) or with the binary MARCS format.
+ You have to specify it in the shell script (variable \textit{marcs\_binary}). \\
+There are 2 output models with distinct formats. You can set as desired their name in the shell script. The first is compatible with \textit{turbospectrum/babsma} ($\log (\tau_{\lambda_{ref}})$, $T$, $\log (Pe)$, $\log (Pg)$, $\xi_t$, $geometrical~depth$, $\log(\tau_{Rosseland}$) and the second presents data closer to \textit{ATLAS or MOOG} needs ($\# layer$, $log(\tau_{\lambda_{ref}})$, $T$, $\log(Pe)$, $\log(Pg)$, $rhox$), with in both cases $\lambda_{ref}$ displayed in the header.\\
+The 3$^{rd}$ output file (\textit{interpol\_check.ps}) is a plot generated by the program and meant to check ``by eye'' the consistency of the calculation (e.g. the interpolated model (green) should fall somewhere among the input models, see for example figure \ref{fig:example}). I strongly advise not to remove the automatic display of this plot. An optional test model can be set. In this case, the model as well as the relative difference with the interpolated model is shown on the plot (black lines).
+
+
+\subsection{Troubleshooting}
+\begin{itemize}
+\item check your model and/or executable path
+\item check that all your input models are: 1) in an adapted format 2) compatible in terms of geometry and lambda reference. 
+\item make sure that your Fortran is endian reading compatible with the binary model. 
+\item make sure that both shell script \textit{interpol.com} and fortran executable \textit{interpol\_modeles} are executable ($>$chmod +x interpol.com interpol\_modeles).
+\end{itemize}
+If these advises do not help you to fix your problem, send me the displayed error message as well as your shell script (.com file). 
+(masseron@astronomy.ohio-state.edu)
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=13cm]{interpol_example.ps}
+ \caption{ Example of interpolation of the Sun model atmosphere (green) compared to the actual MARCS one (black). The stellar parameters of the input models are T$_{eff}$=5500-6000K, $\log$g=4.0-4.5, and z=[Fe/H]=+0.0--2.0. The difference between the interpolation and the ``correct'' Sun model are displayed on the right bottom panels. }
+\label{fig:example}
+\end{center}
+\end{figure}
+
+\section{Program details and method justification}
+Before interpolating the model, the program checks if the models are all in the same geometry (plan parallel or spherical). In case the test fails, the program stops.\\ 
+It also checks the number of layers of each input models and the optical depth reference wavelength.
+If there is a different optical depth reference wavelength, then the program stops. If the number of layers differs from a model to each other, the models are automatically resampled to a common depth basis. 
+
+\subsection{Resampling of input models}
+The input models are first truncated so that their $\tau$ scale overlap. I choose cubic spline resampling of the atmosphere structure  because the atmosphere structure variables behave quite smoothly with depth.
+$\tau_{Rosseland}$ is the default optical depth basis use for resampling (since the MARCS code use it as well for model computation). It is however possible to change it to another optical depth scale (see subroutine 
+\textit{resample} in main program). The chosen optical depth scale will also become the base for the interpolation. The default number of layer used is the one from the first input file.
+
+\subsection{Interpolation of the atmosphere structure}
+\lstinputlisting [caption={Interpolation scheme of the atmosphere structure}\label{interpol_struct}
+]{structdepthparamspace.tex} 
+Then, the thermal structure is interpolated, each layer successively and weighted between the upper and the lower effective temperature values $T_{T_{eff}^{sup}}(\tau_i)$ and $T_{T_{eff}^{inf}}(\tau_i)$ (see scheme \ref{interpol_struct}). We can express the resulting value $T^*$ at the depth $\tau_i$ as following:
+\begin{displaymath}\label{interpformula}
+T^*(\tau_i) = T_{T_{eff}^{inf}}(\tau_i) + x \big(T_{T_{eff}^{sup}}(\tau_i)-T_{T_{eff}^{inf}}(\tau_i)\big)
+\end{displaymath}
+with $x$:
+\begin{displaymath}
+x = \bigg(\frac{T_{eff}^*-T_{eff}^{inf}}{T_{eff}^{sup}-T_{eff}^{inf}}\bigg)^{1-\alpha}
+\end{displaymath}
+and $T_{eff}^*$ as the desired effective temperature, $T_{eff}^{inf}$ 
+and $T_{eff}^{sup}$ as the effective temperatures of the input models and $\alpha$ as a free parameter. The calibration of this free parameter is described in the next section. However, you might prefer simple linear interpolation. In this case just set the variable \textit{optimize} in the Fortran routine to ``.false.'' and $\alpha$ will be set to 0. \\
+The program proceeds identically for the computation of the logarithm of electronic pressure ($\log(Pe)$), the logarithm of the gas pressure($\log (Pg)$), the logarithm of the Rosseland opacity ($\log (\kappa)$), the microturbulence velocity ($\xi_t$) (and the geometrical depth  for spherical geometry models) as a function of effective temperature, gravity and metallicity.\\
+
+\subsection{Calibration}
+The values for $\alpha$ a generally low, indicating that the atmosphere structure behaves almost linearly with stellar parameters (as illustrated in figures \ref{fig:errorintTT} to \ref{fig:errorintzk}).\\
+The calibration of $\alpha$ has been optimized for depths where most lines forms, this means for $-4 < \tau_{Ross} < 0$. Table \ref{tab:interp_power} gives the adopted value for $\alpha$ and the resulting relationship between stellar parameter and structure is displayed the right panels of figures \ref{fig:errorintTT}, \ref{fig:errorintTPe}, \ref{fig:errorintTPg}, \ref{fig:errorintTk}, \ref{fig:errorintgT}, \ref{fig:errorintgPe}, \ref{fig:errorintgPg}, \ref{fig:errorintgk}, \ref{fig:errorintzT}, \ref{fig:errorintzPe}, \ref{fig:errorintzPg} and \ref{fig:errorintzk}.
+
+\begin{table}[!h]
+\begin{tabular}{l|c|c|c|c|c|c}
+parameter/structure                    & T                             & $\log$Pe                          & $\log$Pg     &   $\kappa$                       &  $\xi_{t}$   & geom depth          \\
+\hline T$\rm_{eff}$                     &  0.15                         &  0.3                             &   -0.4       &   -0.15                        &   0          &   0              \\ 
+$\log$ g                                &   0.3                         &  0.05                            &  0.06        &  -0.12                         &   0          &   0              \\
+z                                       &   $1-(\frac{T\rm_{eff}}{4000})^{2.0}$  &  $1-(\frac{T\rm_{eff}}{3500})^{2.5}$      &  $1-(\frac{T\rm_{eff}}{4100})^4$      &  $1-(\frac{T\rm_{eff}}{3700})^{3.5}$      &     0        &     0            \\
+\end{tabular}
+\caption{Adopted values for $\alpha$. Though $\alpha$ values are generally close to 0, interpolation over metallicity is effective temperature dependent (linear at $\approx$ 4000K et quadratic at 6000K).}\label{tab:interp_power}
+\end{table}
+Table \ref{tab:interp_power} illustrates the fact that the relationship between stellar parameter and atmosphere structure are not completely independent from each other. This strongly suggests that it is almost impossible to ensure a simple relationship between models in more than one dimension at the same time. That's why the input models MUST form a "cube" in the stellar parameter space \{Teff,logg,z\}). By consequence, the program requires $2^{n}$ input models, where $n$ is the number of stellar parameters describing the model grid (in the present case T$\rm_{eff}$, $\log$g and [Fe/H], making a total of model of 8). Nevertheless, if the interpolation is needed for only 2 stellar parameters or less, several identical models can be entered. 
+
+
+\subsection{Error estimates}
+Maximum errors expected on the atmosphere structure interpolation and displayed by the program have been calculated according to the following formula:
+
+\begin{displaymath}
+max~error(S) = error_{T_{eff}}(S) + error_{\log g}(S) + error_z(S)
+\end{displaymath}
+where $S$ is the structure ($T, Pe, Pg$ or $\kappa$) and each parameter error expressed as:
+\begin{displaymath}
+error_P(S) = E_P(S) \times \frac{min(P_{up}-P*,P*-P_{low})}{P_{up}-P_{low}} \times \frac{P_{up}-P_{low}}{parameter step}
+\end{displaymath}
+The values  for $E_P(S)$ are mentioned in table \ref{tab:error} and are read from lower right panels of figures \ref{fig:errorintTT} to \ref{fig:errorintzk}.\\
+Note there is not a defined dependence on $\tau$ since this is one of the constrain to set the free parameter $\alpha$.\\
+
+ \begin{table}[!h]
+\begin{center}
+\begin{tabular}{l|c|c|c|c|c|c}
+parameter step/struct               & T            & Pe         &     Pg       &   $\kappa$ \\
+\hline 
+per 100K $\Delta T\rm_{eff}$   &  1.7e-3      &  2.0e-2     &  7.8e-3      &   2.5e-2         \\ 
+per dex $\Delta \log$g         &  1.6e-3      &  0.08       &  0.046       &   0.072           \\
+per dex $\Delta$z              &  3.8e-3     &   0.095      &   0.075       &   0.095           \\
+ \end{tabular}
+\end{center}
+\caption{Maximum error estimates.}\label{tab:error}
+\end{table}
+
+
+
+\subsection{Comments}
+Geometrical depth has not been calibrated and a simple linear interpolation is assumed. \\
+Though microturbulence velocity is interpolated by the program, it is constant with optical depth in standard MARCS. That's why no further calibration has been explored.\\ 
+In fact, $\kappa_{ross}$ is interpolated in order to derive $rhox$. $rhox$ is calculated by integrating the inverse of $kappa$ over $tau$ (see \$5.1 of Cowley and Castelli, A\&A 387, 595-604, 2002). Be very careful while using this variable because the error on the interpolation of $\kappa$ is quite large.
+Pe, Pg and $\kappa$ behave more smoothly with optical depth in logarithm scale thus giving better results for the interpolation.\\ 
+T is the relatively less steep and one of the most linear variable, leading to very low errors for interpolation. Despite Pg is generally better interpolated than Pe, they both gives large errors for wide step interpolations.
+Nevertheless, figures  \ref{fig:errorintTT} to \ref{fig:errorintzk} show that better results are obtained when interpolates hot stars ( $>$ 5000K) and cool stars, giants ($\log g <3.0$) and dwarves, very metal-poor ($[Fe/H] <-2.0$) and more metal-rich stars separately. \\ 
+
+Regarding this study, a suitable grid size for optimal interpolation ($error(S) < 5\%$) would be:
+\begin{itemize}
+\item T$\rm_{eff}$ step = 500K
+\item $\log$g step = 0.5
+\item z step = 0.5
+\end{itemize}
+
+The models used to estimate the error define also the validity boundaries of the current program (see paragraph \emph{Warnings and limitations}). Any extension of these limits should not be considered as the error budget might increase dramatically.      
+
+
+\begin{thebibliography}{1}
+\addcontentsline{toc}{section}{Bibliographie.}
+\bibitem{thesis} Masseron, T.\ 2006, Ph.D.~Thesis, Observatoire de Paris
+\end{thebibliography}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=13cm,angle=-90]{error_interp_TvsTeff.eps}
+ \caption{(left panel) Thermal structure for a set of various Teff models. Metallicity is set to -2.0.  (right panels) Thermal structure as a function of effective temperature for different depth (continuous lines). These values have just been offset to the $T_{eff}$=3800K one for a better appreciation of the relative scale. The empirical law adopted for the interpolation is plotted with discontinuous lines. The absolute error between both is reported on the lower panel (note: these values represent the error for an interpolation over a large range of effective temperature, 3800K to 
+7000K). Note also that there is no clear dependence on gravity. }
+\label{fig:errorintTT}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}            
+\includegraphics[width=13cm,angle=-90]{error_interp_PevsTeff.eps}
+\caption{Interpolation of the logarithm the electronic pressure as a function of effective temperature (see fig.\ref{fig:errorintTT} for legend). Note that there is almost no dependence of electronic pressure vs effective temperature. However, a transition regime appears $T_{eff} \approx$ 5000K, on one side what we would qualify as cool stars and on the other side hot stars. Thus, it is best suited to interpolate models of cool and hot stars separately. On another hand, note that there is no dependence on gravity. }\label{fig:errorintTPe}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}            
+\includegraphics[width=13cm,angle=-90]{error_interp_PgvsTeff.eps}
+\caption{Interpolation of the logarithm of the gas pressure as a function of effective temperature (see fig.\ref{fig:errorintTT} for legend). Same diagnostic as for figure \ref{fig:errorintTPe}: a transition regime appear at $T_{eff} \approx$ 5000K. In the case of Pg, the overall law adopted has been optimized only for the deeper layers ($\tau_{Ross} =0,-2$) and only the corresponding errors have been reported in table\ref{tab:error}. }\label{fig:errorintTPg}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}            
+\includegraphics[width=13cm,angle=-90]{error_interp_kvsTeff.eps}
+\caption{Interpolation of the logarithm of the Rosseland  opacity as a function of effective temperature (see fig.\ref{fig:errorintTT} for legend). Same statements as for figures \ref{fig:errorintTPe} and \ref{fig:errorintTPg} at $T_{eff} \approx $ 5000K and same recommendations. }\label{fig:errorintTk}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=13cm,angle=-90]{error_interp_Tvslogg.eps}
+\caption{Interpolation of the thermal structure as a function of gravity, for 3 distinct metallicities (see fig.\ref{fig:errorintTT} for more detailed legend). Effective temperature has been fixed to 5000K. A transition appear at $\log g \approx 3.0$ and only for very metal-poor stars ([Fe/H] < -2.0). Because there is no power law able to fit the continuum depth overall the range of gravities, it is recommended to treat separately metal-poor giants and dwarves for better results in interpolation.  Optimization of $\alpha$ rely only on the other depths. For the same reason, only the error related to the layer $\tau_{Ross} > -2$ have been taken into account.}\label{fig:errorintgT}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}            
+\includegraphics[width=13cm,angle=-90]{error_interp_Pevslogg.eps}
+\caption{Interpolation of the logartihm of the electronic pressure as a function of gravity, for 3 distinct metallicities (see fig.\ref{fig:errorintTT} for more detailed legend). At the opposite of the thermal structure, the electronic pressure behaves very linearly with gravity. The $\alpha$ parameter is subsequently very close to 0. However, the relative error remain non negligible because the overal variation of Pe vs logg is very steep.}\label{fig:errorintgPe}
+\end{center}
+\end{figure}
+\begin{figure}[h!]
+
+\begin{center}            
+\includegraphics[width=13cm,angle=-90]{error_interp_Pgvslogg.eps}
+\caption{Interpolation ofthe  logarithm of the gas pressure as a function of gravity. (same comments as for figure \ref{fig:errorintgPe}).}\label{fig:errorintgPg}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}            
+\includegraphics[width=13cm,angle=-90]{error_interp_kvslogg.eps}
+\caption{Interpolation of the logarithm of the Rosseland opacity  as a function of gravity. Despite the behavior of $\kappa$ is roughly linear as for Pe and Pg, a small transition regime appear at $\log g \approx 3$ as seen for thermal structure  vs $\log g$. }\label{fig:errorintgk}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=13cm,angle=-90]{error_interp_Tvsz.eps}
+\caption{Interpolation of the thermal structure as a function of metallicity for 4 distinct effective temperatures. As noticed in figures \ref{fig:errorintTPe}, \ref{fig:errorintTPg} and \ref{fig:errorintTk}, structure in models at lower effective ($T_{eff} <5000K$) behave more linearly while they have a more quadratic behavior for upper temperature. Note as well that concerning cool stars, thermal structure in metal-rich ($[Fe/H] >-2$) and very metal-poor stars behave differently. This is explained by the appearance of molecules affecting strongly the atmosphere such as CO, CN and CH. That's why it is recommended to deal separately with both classes for better results.  }\label{fig:errorintzT}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=13cm,angle=-90]{error_interp_Pevsz.eps}
+\caption{Interpolation of the logarithm of the electronic pressure as a function of metallicity. Despite the electronic pressure behaves quite smoothly with metallicity, the errors resulting of the adopted law (discontinuous lines) remain non negligible because the overall variation is quite important. However, there is a strong dependence of Pe with the effective temperature. By consequence, the power law adopted is parametrized by the effective temperature.  }\label{fig:errorintzPe}
+\end{center}
+\end{figure}
+
+\begin{figure}[h!]
+\begin{center}
+\includegraphics[width=13cm,angle=-90]{error_interp_Pgvsz.eps}
+\caption{Interpolation of the logarithm of the gas pressure as a function of metallicity (same comments as for figure \ref{fig:errorintzPe}).}\label{fig:errorintzPg}
+\end{center}
+\end{figure}
+
+
+\begin{figure}[h!]
+\begin{center}            
+\includegraphics[width=13cm,angle=-90]{error_interp_kvsz.eps}
+\caption{Interpolation of the logarithm of the Rosseland opacity as a function of metallicity (same comments as for figure \ref{fig:errorintzPe}).}\label{fig:errorintzk}
+\end{center}
+\end{figure}
+
+
+\end{document}

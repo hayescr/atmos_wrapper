@@ -1,0 +1,56 @@
+\relax 
+\select@language{english}
+\@writefile{toc}{\select@language{english}}
+\@writefile{lof}{\select@language{english}}
+\@writefile{lot}{\select@language{english}}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {1}Representation of the interpolation of a model atmosphere(@) among a cubic grid of input models.}{1}}
+\newlabel{interpol_space}{{1}{1}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Warnings and limitations}{1}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Installation and execution}{2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Requirements}{2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Installation}{2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Execution}{2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Input and output files}{3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Troubleshooting}{4}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Program details and method justification}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Resampling of input models}{4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Interpolation of the atmosphere structure}{5}}
+\newlabel{interpol_struct}{{2}{5}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2}{Interpolation scheme of the atmosphere structure}}{5}}
+\newlabel{interpformula}{{4.2}{5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Calibration}{6}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Adopted values for $\alpha $. Though $\alpha $ values are generally close to 0, interpolation over metallicity is effective temperature dependent (linear at $\approx $ 4000K et quadratic at 6000K).}}{6}}
+\newlabel{tab:interp_power}{{1}{6}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Error estimates}{6}}
+\bibcite{thesis}{1}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Maximum error estimates.}}{7}}
+\newlabel{tab:error}{{2}{7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Comments}{7}}
+\@writefile{toc}{\contentsline {section}{Bibliographie.}{8}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces  Example of interpolation of the Sun model atmosphere (green) compared to the actual MARCS one (black). The stellar parameters of the input models are T$_{eff}$=5500-6000K, $\qopname  \relax o{log}$g=4.0-4.5, and z=[Fe/H]=+0.0--2.0. The difference between the interpolation and the ``correct'' Sun model are displayed on the right bottom panels. }}{9}}
+\newlabel{fig:example}{{1}{9}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces (left panel) Thermal structure for a set of various Teff models. Metallicity is set to -2.0. (right panels) Thermal structure as a function of effective temperature for different depth (continuous lines). These values have just been offset to the $T_{eff}$=3800K one for a better appreciation of the relative scale. The empirical law adopted for the interpolation is plotted with discontinuous lines. The absolute error between both is reported on the lower panel (note: these values represent the error for an interpolation over a large range of effective temperature, 3800K to 7000K). Note also that there is no clear dependence on gravity. }}{10}}
+\newlabel{fig:errorintTT}{{2}{10}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Interpolation of the logarithm the electronic pressure as a function of effective temperature (see fig.\ref  {fig:errorintTT} for legend). Note that there is almost no dependence of electronic pressure vs effective temperature. However, a transition regime appears $T_{eff} \approx $ 5000K, on one side what we would qualify as cool stars and on the other side hot stars. Thus, it is best suited to interpolate models of cool and hot stars separately. On another hand, note that there is no dependence on gravity. }}{11}}
+\newlabel{fig:errorintTPe}{{3}{11}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Interpolation of the logarithm of the gas pressure as a function of effective temperature (see fig.\ref  {fig:errorintTT} for legend). Same diagnostic as for figure \ref  {fig:errorintTPe}: a transition regime appear at $T_{eff} \approx $ 5000K. In the case of Pg, the overall law adopted has been optimized only for the deeper layers ($\tau _{Ross} =0,-2$) and only the corresponding errors have been reported in table\ref  {tab:error}. }}{12}}
+\newlabel{fig:errorintTPg}{{4}{12}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Interpolation of the logarithm of the Rosseland opacity as a function of effective temperature (see fig.\ref  {fig:errorintTT} for legend). Same statements as for figures \ref  {fig:errorintTPe} and \ref  {fig:errorintTPg} at $T_{eff} \approx $ 5000K and same recommendations. }}{13}}
+\newlabel{fig:errorintTk}{{5}{13}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Interpolation of the thermal structure as a function of gravity, for 3 distinct metallicities (see fig.\ref  {fig:errorintTT} for more detailed legend). Effective temperature has been fixed to 5000K. A transition appear at $\qopname  \relax o{log}g \approx 3.0$ and only for very metal-poor stars ([Fe/H] < -2.0). Because there is no power law able to fit the continuum depth overall the range of gravities, it is recommended to treat separately metal-poor giants and dwarves for better results in interpolation. Optimization of $\alpha $ rely only on the other depths. For the same reason, only the error related to the layer $\tau _{Ross} > -2$ have been taken into account.}}{14}}
+\newlabel{fig:errorintgT}{{6}{14}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Interpolation of the logartihm of the electronic pressure as a function of gravity, for 3 distinct metallicities (see fig.\ref  {fig:errorintTT} for more detailed legend). At the opposite of the thermal structure, the electronic pressure behaves very linearly with gravity. The $\alpha $ parameter is subsequently very close to 0. However, the relative error remain non negligible because the overal variation of Pe vs logg is very steep.}}{15}}
+\newlabel{fig:errorintgPe}{{7}{15}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Interpolation ofthe logarithm of the gas pressure as a function of gravity. (same comments as for figure \ref  {fig:errorintgPe}).}}{16}}
+\newlabel{fig:errorintgPg}{{8}{16}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Interpolation of the logarithm of the Rosseland opacity as a function of gravity. Despite the behavior of $\kappa $ is roughly linear as for Pe and Pg, a small transition regime appear at $\qopname  \relax o{log}g \approx 3$ as seen for thermal structure vs $\qopname  \relax o{log}g$. }}{17}}
+\newlabel{fig:errorintgk}{{9}{17}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Interpolation of the thermal structure as a function of metallicity for 4 distinct effective temperatures. As noticed in figures \ref  {fig:errorintTPe}, \ref  {fig:errorintTPg} and \ref  {fig:errorintTk}, structure in models at lower effective ($T_{eff} <5000K$) behave more linearly while they have a more quadratic behavior for upper temperature. Note as well that concerning cool stars, thermal structure in metal-rich ($[Fe/H] >-2$) and very metal-poor stars behave differently. This is explained by the appearance of molecules affecting strongly the atmosphere such as CO, CN and CH. That's why it is recommended to deal separately with both classes for better results. }}{18}}
+\newlabel{fig:errorintzT}{{10}{18}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Interpolation of the logarithm of the electronic pressure as a function of metallicity. Despite the electronic pressure behaves quite smoothly with metallicity, the errors resulting of the adopted law (discontinuous lines) remain non negligible because the overall variation is quite important. However, there is a strong dependence of Pe with the effective temperature. By consequence, the power law adopted is parametrized by the effective temperature. }}{19}}
+\newlabel{fig:errorintzPe}{{11}{19}}
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Interpolation of the logarithm of the gas pressure as a function of metallicity (same comments as for figure \ref  {fig:errorintzPe}).}}{20}}
+\newlabel{fig:errorintzPg}{{12}{20}}
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Interpolation of the logarithm of the Rosseland opacity as a function of metallicity (same comments as for figure \ref  {fig:errorintzPe}).}}{21}}
+\newlabel{fig:errorintzk}{{13}{21}}
