@@ -3,6 +3,8 @@ import os
 
 class AtmosManager:
 
+    wrapper_path = os.path.dirname(os.path.realpath(__file__))
+
     def __init__(self, teff, logg, feh, vmicro=None, cfe=0., alphafe=0.):
         # Need to decide if we are going to have c and alpha input as flags
         # Or if we want to just input values and just force add set C and alpha
@@ -35,7 +37,7 @@ class AtmosManager:
 
         return vmicro
 
-    def interp_atmos(self, star=None, file_format='ts'):
+    def interp_atmos(self, star=None, file_format='ts', path=None):
         if file_format.lower() in ['moog', 'm']:
             format_code = 'MOOG'
         elif file_format.lower() in ['turbospectrum',
@@ -53,12 +55,22 @@ class AtmosManager:
                            f'{self.vmicro:.2f} {self.cfe:.2f} '
                            f'{self.alphafe:.2f} {format_code} {self.filename}')
 
+        cwd = os.getcwd()
+        os.chdir(AtmosManager.wrapper_path)
         os.system(f'./load_atmos_param.com {atmos_param_arg}')
+
+        if path is None:
+            path = cwd
+
+        if os.path.isfile(f'./{self.filename}'):
+            os.rename(f'./{self.filename}', f'{path}/{self.filename}')
+            self.file_loc = f'{path}/{self.filename}'
+        else:
+            print('Interpolation failed')
+
+        os.chdir(cwd)
 
     def moog_abund(self, abund_dict):
         # To be implemented
         pass
 
-    def move(self, path):
-        # To be implemented
-        pass
