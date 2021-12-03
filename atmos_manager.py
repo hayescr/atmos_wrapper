@@ -86,7 +86,7 @@ class AtmosManager:
                                          f'NATOMS    {len(elem_num_dict):2d}')
                     print(nline, file=newfile, end='')
                     for elem, val in elem_num_dict.items():
-                        print(f'   {elem}  {val}', file=newfile)
+                        print(f'   {elem}  {val:.2f}', file=newfile)
                 else:
                     print(line, file=newfile, end='')
 

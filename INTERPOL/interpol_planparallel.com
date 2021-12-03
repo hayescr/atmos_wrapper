@@ -17,6 +17,9 @@
 # model7: Teffup loggup zlow
 # model8: Teffup loggup zup
 ######################################################################################################
+setenv LC_ALL C
+# The above should solve the problem of awk clipping exponential notation in
+# picking the best carbon and alpha model
 
 echo 'interpolation script begin'
 
