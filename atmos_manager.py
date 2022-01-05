@@ -105,7 +105,7 @@ class AtmosManager:
 
         os.chdir(cwd)
 
-        return filename
+        return self.filename
 
     def moog_abund(self, abund_dict):
         '''
