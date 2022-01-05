@@ -3,12 +3,26 @@ from abund_utils import atomic_sym_to_num
 
 
 class AtmosManager:
+    '''
+    This class is provides a python interface for a\MARCS model atmosphere grid
+        interpolator wrapper. It can also add MOOG formated chemical abundances
+        to interpolated MARCS atmosphere files.
+    '''
 
     wrapper_path = os.path.dirname(os.path.realpath(__file__))
 
     def __init__(self, teff, logg, feh, vmicro=None, cfe=0., alphafe=0.):
-        # Need to decide if we are going to have c and alpha input as flags
-        # Or if we want to just input values and just force add set C and alpha
+        '''
+        On initialization the AtmosManager will set the input stellar
+            parameters.
+
+        teff : float, effective temperature
+        logg : float, surface gravity
+        feh : float, metallicity
+        vmicro : float, microturbulent velocity
+        cfe : float, carbon to iron ratio
+        alphafe : float, alpha to iron ratio
+        '''
         self.teff = teff
         self.logg = logg
         self.feh = feh
@@ -21,6 +35,13 @@ class AtmosManager:
         self.alphafe = alphafe
 
     def vmicro_calc(self):
+        '''
+        Custom vmicro calculation from BACCHUS.  Used if no vmicro is provided.
+
+        returns
+
+        vmicro : float, microturbulent velocity
+        '''
         if self.logg < 3.5:
             if self.teff < 5250.:
                 vmicro = 1.15 + 2e-4 * (self.teff - 5500.) + 3.95e-7 * (
@@ -39,6 +60,19 @@ class AtmosManager:
         return vmicro
 
     def interp_atmos(self, star=None, file_format='ts', path=None):
+        '''
+        Formats the input for the wrapper of the MARCS model atmosphere
+            interpolater.
+
+        star : string, input star name (optional)
+        file_format : string, indicates whether the interoplated atmospheres
+            are to be in MOOG or turbospectrum formats.
+        path : string, path to the output interpolated atmosphere
+
+        returns
+
+        filename : string, the output interpolated atmosphere filename
+        '''
         if file_format.lower() in ['moog', 'm']:
             format_code = 'MOOG'
         elif file_format.lower() in ['turbospectrum',
@@ -71,8 +105,18 @@ class AtmosManager:
 
         os.chdir(cwd)
 
+        return filename
+
     def moog_abund(self, abund_dict):
-        # To be implemented
+        '''
+        Takes input dictionary of log epsilon abundances (e.g., {'C' : 8.66}),
+            and appends the necessary chemical abundance information in MOOG
+            format to the interpolated model atmosphere.
+
+        abund_dict : dictionary, contains key value pairs of element symbols
+            and their log epsilon abundances
+        '''
+
         elem_num_dict = dict(sorted({atomic_sym_to_num(
             elem): val for elem, val in abund_dict.items()}.items()))
         with open(self.file_loc, 'r') as file:
