@@ -4,7 +4,7 @@ from abund_utils import atomic_sym_to_num
 
 class AtmosManager:
     '''
-    This class is provides a python interface for a\MARCS model atmosphere grid
+    This class is provides a python interface for a MARCS model atmosphere grid
         interpolator wrapper. It can also add MOOG formated chemical abundances
         to interpolated MARCS atmosphere files.
     '''
@@ -67,7 +67,8 @@ class AtmosManager:
         star : string, input star name (optional)
         file_format : string, indicates whether the interoplated atmospheres
             are to be in MOOG or turbospectrum formats.
-        path : string, path to the output interpolated atmosphere
+        path : string, path to the output interpolated atmosphere (absolute
+            path needed)
 
         returns
 
