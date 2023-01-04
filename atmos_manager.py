@@ -98,6 +98,10 @@ class AtmosManager:
         if path is None:
             path = cwd
 
+        extrap_filename = f'{self.filename[:-4]}.ext'
+        if os.path.isfile(f'./{extrap_filename}'):
+            self.filename = extrap_filename
+
         if os.path.isfile(f'./{self.filename}'):
             os.rename(f'./{self.filename}', f'{path}/{self.filename}')
             self.file_loc = f'{path}/{self.filename}'
