@@ -59,7 +59,8 @@ class AtmosManager:
 
         return vmicro
 
-    def interp_atmos(self, star=None, file_format='ts', path=None):
+    def interp_atmos(self, star=None, file_format='ts', path=None,
+                     include_param=True):
         '''
         Formats the input for the wrapper of the MARCS model atmosphere
             interpolater.
@@ -83,9 +84,11 @@ class AtmosManager:
         if star is None:
             self.filename = (f'{self.teff:.0f}g{self.logg:.2f}m1.0z'
                              f'{self.feh:.2f}.int')
-        else:
+        elif include_param:
             self.filename = (f'{self.teff:.0f}g{self.logg:.2f}m1.0z'
                              f'{self.feh:.2f}_{star}.int')
+        else:
+            self.filename = f'{star}.int'
 
         atmos_param_arg = (f'{self.teff:.0f} {self.logg:.2f} {self.feh:.2f} '
                            f'{self.vmicro:.2f} {self.cfe:.2f} '
